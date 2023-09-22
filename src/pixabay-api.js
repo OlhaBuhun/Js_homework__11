@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export default class NewsApi {
   constructor() {
     this.searchQueru = '';
@@ -20,14 +22,14 @@ export default class NewsApi {
   
     axios.get(BASE_URL, {
       params: queryParameters,
-      // headers: {
-      //   Authorization: keyApi
-      // }
     })
     .then( (response)=> {
-      // console.log(response);
-      console.log(response.data);
-  })
+      // console.log(response.data);
+      return response.data
+    })
+    .then(data => {
+      this.incrementPage();
+    })
   };
 
   incrementPage() {
