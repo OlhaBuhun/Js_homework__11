@@ -12,7 +12,7 @@ export default class NewsApi {
 
     const queryParameters = {
       'key': keyApi,
-      'g' : this.searchQueru,
+      'q' : this.searchQueru,
       'image_type': 'photo',
       'orientation': 'horizontal',
       'safesearch': 'true',
@@ -20,15 +20,14 @@ export default class NewsApi {
       'page': this.page,
     };
   
-    axios.get(BASE_URL, {
+    return axios.get(BASE_URL, {
       params: queryParameters,
     })
-    .then( (response)=> {
-      // console.log(response.data);
-      return response.data
-    })
+    .then( (response)=> response.data)
     .then(data => {
       this.incrementPage();
+      return data.hits;
+      
     })
   };
 
