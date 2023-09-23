@@ -22,20 +22,23 @@ function onSearch(evt) {
   newsApi.searchQueru = evt.currentTarget.searchQuery.value;
   newsApi.resetPage();
   newsApi.axiosRequest().then(appendMarkup);
+  gallery.refresh()
   
 };
 
 function onLoaderMore(evt) {
   newsApi.axiosRequest().then(appendMarkup);
+  gallery.refresh()
   
 };
 
 function renderCard(arr) {
   return arr.map (({webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => 
-  `  <div class="photo-card">
-  <a href="${largeImageURL}"></a>
-  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
-  <div class="info">
+  ` <div class="photo-card">
+    <a class="gallery__link" href="${largeImageURL}">
+    <img class="gallery__image" src="${webformatURL}" alt="${tags} 
+     loading="lazy" />
+    <div class="info">
     <p class="info-item">
     Likes
       <b>${likes}</b>
@@ -53,16 +56,32 @@ function renderCard(arr) {
       <b>${downloads}</b>
     </p>
   </div>
+  </a>
 </div>`).join('');
 
 }
 
 function appendMarkup(hits) {
   refs.imgGallery.insertAdjacentHTML('beforeend', renderCard(hits));
+  // let gallery = $('.photo-card a').simpleLightbox();
+  let gallery = new SimpleLightbox('.photo-card a', {
+    // captionsData:'alt',
+    captionPosition: 'bottom',
+    captionDelay: 250,
+    docClose: 'true'
+  });
 }
 
-let gallery = new SimpleLightbox('.gallery a');
-gallery.on('show.simplelightbox', appendMarkup);
+// new SimpleLightbox('.photo-card a', {
+//   captionsData:'alt',
+//   captionPosition: 'bottom',
+//   captionDelay: 250,
+//   docClose: 'true'
+// });
+
+
+
+// gallery.refresh(); // Next Image
 
 // webformatURL - посилання на маленьке зображення для списку карток.
 // largeImageURL - посилання на велике зображення.
