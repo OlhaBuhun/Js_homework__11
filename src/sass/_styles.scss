@@ -54,7 +54,7 @@
 }
 
 .info-item {
-  display: block;
+  display: flex;
 }
 
 .js-hidden {
@@ -62,7 +62,7 @@
 }
 
 .search-form {
-  display: block;
+  display: flex;
   justify-content: center;
   padding: 10px;
   margin-bottom: 24px;

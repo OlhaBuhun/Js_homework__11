@@ -1,5 +1,5 @@
 import axios from "axios";
-import Notiflix from 'notiflix';
+import Notiflix, { Loading } from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import NewsApi from "./pixabay-api";
@@ -8,62 +8,54 @@ import NewsApi from "./pixabay-api";
 const refs = {
   form: document.querySelector('.search-form'),
   imgGallery: document.querySelector('.gallery'),
-  loadMoreBtn: document.querySelector('.load-more')
+  guard: document.querySelector('.is-guard'),
 };
 
-const newsApi = new NewsApi();
-refs.loadMoreBtn.classList.add('js-hidden');
-
 refs.form.addEventListener('submit', onSearch);
-refs.loadMoreBtn.addEventListener('click', onLoaderMore);
+
+const newsApi = new NewsApi();
+
+const options = {
+  root: null,
+  rootMargin: "200px",
+  threshold: 1.0,
+};
+
+const observer = new IntersectionObserver(onLoad, options);
+
+
 
 function onSearch(evt) {
   evt.preventDefault();
   refs.imgGallery.innerHTML = '';
-  
 
   newsApi.searchQueru = evt.currentTarget.searchQuery.value;
-  refs.loadMoreBtn.classList.remove('js-hidden');
-  refs.loadMoreBtn.setAttribute('disabled', true);
 
   newsApi.resetPage();
-  newsApi.axiosRequest().then(hits => {
-    appendMarkup(hits);
-    refs.loadMoreBtn.removeAttribute('disabled');
+  newsApi.axiosRequest()
+  .then(hits => {
+       appendMarkup(hits);
+      //  gallery.refresh();
   });
-  gallery.refresh();
-
-  
-
-//   const { height: cardHeight } = 
-//   refs.imgGallery
-//   .firstElementChild.getBoundingClientRect();
-
-// window.scrollBy({
-//   top: cardHeight * 2,
-//   behavior: "smooth",
-// });
   
 };
 
-function onLoaderMore(evt) {
-  // refs.loadMoreBtn.classList.remove('js-hidden');
-  newsApi.axiosRequest().then(hits => {
-    appendMarkup(hits);
-    refs.loadMoreBtn.removeAttribute('disabled');
-  });
-  gallery.refresh();
+function onLoad(entries, observer){
+  console.log(entries);
+  console.log(observer);
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      newsApi.axiosRequest()
+      .then(hits => {
+       appendMarkup(hits);
+       if(newsApi.page === newsApi.pages){
+        observer.unobserve(refs.guard);
+       }
+  })
+    }
+  })
+}
 
-//   const { height: cardHeight } = 
-//    refs.imgGallery
-//   .firstElementChild.getBoundingClientRect();
-
-//     window.scrollBy({
-//       top: cardHeight * 2,
-//       behavior: "smooth",
-// });
-  
-};
 
 function renderCard(arr) {
   return arr.map (({webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => 
@@ -96,13 +88,18 @@ function renderCard(arr) {
 
 function appendMarkup(hits) {
   refs.imgGallery.insertAdjacentHTML('beforeend', renderCard(hits));
-  // let gallery = $('.photo-card a').simpleLightbox();
-  let gallery = new SimpleLightbox('.photo-card a', {
+  
+  const gallery = new SimpleLightbox('.photo-card a', {
     // captionsData:'alt',
-    captionPosition: 'bottom',
+    // captionPosition: 'bottom',
     captionDelay: 250,
     docClose: 'true'
   });
+  
+  
+  observer.observe(refs.guard);
+  gallery.refresh();
+ 
 }
 
 // new SimpleLightbox('.photo-card a', {
@@ -116,11 +113,5 @@ function appendMarkup(hits) {
 
 // gallery.refresh(); // Next Image
 
-// webformatURL - посилання на маленьке зображення для списку карток.
-// largeImageURL - посилання на велике зображення.
-// tags - рядок з описом зображення. Підійде для атрибуту alt.
-// likes - кількість лайків.
-// views - кількість переглядів.
-// comments - кількість коментарів.
-// downloads - кількість завантажень.
+
 
