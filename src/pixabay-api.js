@@ -16,7 +16,7 @@ export default class NewsApi {
       'image_type': 'photo',
       'orientation': 'horizontal',
       'safesearch': 'true',
-      'per_page': 40,
+      'per_page': 4,
       'page': this.page,
     };
   
@@ -39,13 +39,13 @@ export default class NewsApi {
     this.page = 1;
   };
 
-  get query() {
-    return this.searchQueru;
-  };
+  // get query() {
+  //   return this.searchQueru;
+  // };
 
-  set query (newQwuery) {
-    this.searchQueru = newQwuery;
-  }
+  // set query (newQwuery) {
+  //   this.searchQueru = newQwuery;
+  // }
 }
 
 

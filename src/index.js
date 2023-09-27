@@ -12,23 +12,56 @@ const refs = {
 };
 
 const newsApi = new NewsApi();
+refs.loadMoreBtn.classList.add('js-hidden');
 
 refs.form.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onLoaderMore);
 
 function onSearch(evt) {
   evt.preventDefault();
+  refs.imgGallery.innerHTML = '';
+  
 
   newsApi.searchQueru = evt.currentTarget.searchQuery.value;
+  refs.loadMoreBtn.classList.remove('js-hidden');
+  refs.loadMoreBtn.setAttribute('disabled', true);
+
   newsApi.resetPage();
-  newsApi.axiosRequest().then(appendMarkup);
-  gallery.refresh()
+  newsApi.axiosRequest().then(hits => {
+    appendMarkup(hits);
+    refs.loadMoreBtn.removeAttribute('disabled');
+  });
+  gallery.refresh();
+
+  
+
+//   const { height: cardHeight } = 
+//   refs.imgGallery
+//   .firstElementChild.getBoundingClientRect();
+
+// window.scrollBy({
+//   top: cardHeight * 2,
+//   behavior: "smooth",
+// });
   
 };
 
 function onLoaderMore(evt) {
-  newsApi.axiosRequest().then(appendMarkup);
-  gallery.refresh()
+  // refs.loadMoreBtn.classList.remove('js-hidden');
+  newsApi.axiosRequest().then(hits => {
+    appendMarkup(hits);
+    refs.loadMoreBtn.removeAttribute('disabled');
+  });
+  gallery.refresh();
+
+//   const { height: cardHeight } = 
+//    refs.imgGallery
+//   .firstElementChild.getBoundingClientRect();
+
+//     window.scrollBy({
+//       top: cardHeight * 2,
+//       behavior: "smooth",
+// });
   
 };
 
