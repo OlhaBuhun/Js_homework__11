@@ -1,5 +1,5 @@
 import axios from "axios";
-import Notiflix, { Loading } from 'notiflix';
+import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import NewsApi from "./pixabay-api";
@@ -12,17 +12,17 @@ const refs = {
 };
 
 refs.form.addEventListener('submit', onSearch);
+// Notiflix.Block.arrows('.search-form');
 
 const newsApi = new NewsApi();
 
 const options = {
   root: null,
-  rootMargin: "200px",
+  rootMargin: "300px",
   threshold: 1.0,
 };
 
 const observer = new IntersectionObserver(onLoad, options);
-
 
 
 function onSearch(evt) {
@@ -48,8 +48,10 @@ function onLoad(entries, observer){
       newsApi.axiosRequest()
       .then(hits => {
        appendMarkup(hits);
-       if(newsApi.page === newsApi.pages){
+       if(newsApi.page*40 === newsApi.totalHits){
+        // Notiflix.Notify.warning('We are sorry, but you have reached the end of search results.');
         observer.unobserve(refs.guard);
+       
        }
   })
     }
@@ -95,10 +97,18 @@ function appendMarkup(hits) {
     captionDelay: 250,
     docClose: 'true'
   });
-  
-  
+ 
   observer.observe(refs.guard);
   gallery.refresh();
+
+  const { height: cardHeight } = refs.imgGallery
+  .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: "smooth",
+  }); 
+  
  
 }
 

@@ -16,8 +16,9 @@ export default class NewsApi {
       'image_type': 'photo',
       'orientation': 'horizontal',
       'safesearch': 'true',
-      'per_page': 10,
+      'per_page': 40,
       'page': this.page,
+      // 'order': 'latest',
     };
   
     return axios.get(BASE_URL, {
@@ -29,10 +30,17 @@ export default class NewsApi {
       // }
       return response.data})
     .then(data => {
+      console.log(data);
       this.incrementPage();
-      return data.hits;
-      
+      return data;
     })
+    .then(data => {
+      return data.hits;
+    })
+    // .then(data => {
+    //   return data.totalHits;
+    // })
+    
   };
 
   incrementPage() {
