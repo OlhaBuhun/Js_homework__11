@@ -4,6 +4,8 @@ export default class NewsApi {
   constructor() {
     this.searchQueru = '';
     this.page = 1;
+    this.totalHits = 1;
+    this.per_page = 40;
   }
 
   axiosRequest() {
@@ -16,7 +18,7 @@ export default class NewsApi {
       'image_type': 'photo',
       'orientation': 'horizontal',
       'safesearch': 'true',
-      'per_page': 40,
+      'per_page': this.per_page,
       'page': this.page,
       // 'order': 'latest',
     };
@@ -25,20 +27,15 @@ export default class NewsApi {
       params: queryParameters,
     })
     .then( (response)=> {
-      // if(!response.ok){
-      //   throw new Error()
-      // }
       return response.data})
     .then(data => {
-      console.log(data);
       this.incrementPage();
-      return data;
-    })
-    .then(data => {
+      this.totalHits = data.totalHits;
+
       return data.hits;
     })
     // .then(data => {
-    //   return data.totalHits;
+    //   return data.hits;
     // })
     
   };

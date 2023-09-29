@@ -18,7 +18,7 @@ const newsApi = new NewsApi();
 
 const options = {
   root: null,
-  rootMargin: "300px",
+  rootMargin: "200px",
   threshold: 1.0,
 };
 
@@ -30,28 +30,36 @@ function onSearch(evt) {
   refs.imgGallery.innerHTML = '';
 
   newsApi.searchQueru = evt.currentTarget.searchQuery.value;
-
+  console.log(newsApi.searchQueru);
   newsApi.resetPage();
+
+  if(!newsApi.searchQueru){
+        throw new Error()
+      }
   newsApi.axiosRequest()
   .then(hits => {
        appendMarkup(hits);
       //  gallery.refresh();
+      console.log(newsApi.totalHits);
   });
   
 };
 
 function onLoad(entries, observer){
-  console.log(entries);
-  console.log(observer);
   entries.forEach(entry => {
     if(entry.isIntersecting){
       newsApi.axiosRequest()
       .then(hits => {
        appendMarkup(hits);
-       if(newsApi.page*40 === newsApi.totalHits){
-        // Notiflix.Notify.warning('We are sorry, but you have reached the end of search results.');
+       if(newsApi.page === Math.ceil(newsApi.totalHits/newsApi.per_page)){
+        Notiflix.Notify.failure(
+          'We are sorry, but you have reached the end of search results.',
+          {
+            timeout: 10000,
+            width: '500px',
+          },
+        );
         observer.unobserve(refs.guard);
-       
        }
   })
     }
@@ -92,8 +100,6 @@ function appendMarkup(hits) {
   refs.imgGallery.insertAdjacentHTML('beforeend', renderCard(hits));
   
   const gallery = new SimpleLightbox('.photo-card a', {
-    // captionsData:'alt',
-    // captionPosition: 'bottom',
     captionDelay: 250,
     docClose: 'true'
   });
@@ -112,16 +118,11 @@ function appendMarkup(hits) {
  
 }
 
-// new SimpleLightbox('.photo-card a', {
-//   captionsData:'alt',
-//   captionPosition: 'bottom',
-//   captionDelay: 250,
-//   docClose: 'true'
-// });
 
 
 
-// gallery.refresh(); // Next Image
+
+
 
 
 
