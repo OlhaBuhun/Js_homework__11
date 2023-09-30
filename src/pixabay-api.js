@@ -8,7 +8,35 @@ export default class NewsApi {
     this.per_page = 40;
   }
 
-  axiosRequest() {
+  // axiosRequest() {
+  //   const BASE_URL = 'https://pixabay.com/api/';
+  //   const keyApi = '39533790-85df6cbf34193d8f2f0ca09de';
+
+  //   const queryParameters = {
+  //     'key': keyApi,
+  //     'q' : this.searchQueru,
+  //     'image_type': 'photo',
+  //     'orientation': 'horizontal',
+  //     'safesearch': 'true',
+  //     'per_page': this.per_page,
+  //     'page': this.page,
+  //     // 'order': 'latest',
+  //   };
+  
+  //   return axios.get(BASE_URL, {
+  //     params: queryParameters,
+  //   })
+  //   .then( (response)=> {
+  //     return response.data})
+  //   .then(data => {
+  //     this.incrementPage();
+  //     this.totalHits = data.totalHits;
+
+  //     return data.hits;
+  //   })    
+  // };
+
+  async axiosRequest() {
     const BASE_URL = 'https://pixabay.com/api/';
     const keyApi = '39533790-85df6cbf34193d8f2f0ca09de';
 
@@ -23,21 +51,19 @@ export default class NewsApi {
       // 'order': 'latest',
     };
   
-    return axios.get(BASE_URL, {
+    const response = await axios.get(BASE_URL, {
       params: queryParameters,
-    })
-    .then( (response)=> {
-      return response.data})
-    .then(data => {
-      this.incrementPage();
-      this.totalHits = data.totalHits;
-
+    });
+    // return response;
+    const data = await  response.data;
+    console.log(data);
+    this.incrementPage();
+    this.totalHits = data.totalHits;
+    // const hits = data.hits
+    console.log(data.hits);
+    console.log(this.totalHits);
       return data.hits;
-    })
-    // .then(data => {
-    //   return data.hits;
-    // })
-    
+       
   };
 
   incrementPage() {
@@ -56,6 +82,7 @@ export default class NewsApi {
   //   this.searchQueru = newQwuery;
   // }
 }
+
 
 
 

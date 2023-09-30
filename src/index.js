@@ -5,6 +5,8 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 import NewsApi from "./pixabay-api";
 
 
+
+
 const refs = {
   form: document.querySelector('.search-form'),
   imgGallery: document.querySelector('.gallery'),
@@ -40,7 +42,6 @@ function onSearch(evt) {
   .then(hits => {
        appendMarkup(hits);
       //  gallery.refresh();
-      console.log(newsApi.totalHits);
   });
   
 };
