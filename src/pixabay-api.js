@@ -37,6 +37,7 @@ export default class NewsApi {
   // };
 
   async axiosRequest() {
+    
     const BASE_URL = 'https://pixabay.com/api/';
     const keyApi = '39533790-85df6cbf34193d8f2f0ca09de';
 
@@ -54,15 +55,11 @@ export default class NewsApi {
     const response = await axios.get(BASE_URL, {
       params: queryParameters,
     });
-    // return response;
-    const data = await  response.data;
-    console.log(data);
+    
+    const data =   response.data;
     this.incrementPage();
     this.totalHits = data.totalHits;
-    // const hits = data.hits
-    console.log(data.hits);
-    console.log(this.totalHits);
-      return data.hits;
+    return data.hits;
        
   };
 

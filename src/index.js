@@ -27,30 +27,51 @@ const options = {
 const observer = new IntersectionObserver(onLoad, options);
 
 
-function onSearch(evt) {
-  evt.preventDefault();
+async function onSearch(evt) {
+ try { evt.preventDefault();
   refs.imgGallery.innerHTML = '';
 
   newsApi.searchQueru = evt.currentTarget.searchQuery.value;
   console.log(newsApi.searchQueru);
   newsApi.resetPage();
-
+  Notiflix.Loading.standard({
+    backgroundColor: 'rgba(0,0,0,0)',
+  })
   if(!newsApi.searchQueru){
         throw new Error()
       }
-  newsApi.axiosRequest()
-  .then(hits => {
-       appendMarkup(hits);
-      //  gallery.refresh();
-  });
+  const hits = await newsApi.axiosRequest();
+  Notiflix.Loading.remove();
+  appendMarkup(hits);
+  Notiflix.Notify.success(
+    `Hooray! We found ${newsApi.totalHits} images.`,
+    {
+      timeout: 6000,
+      width: '500px',
+    },
+  );
+
+  }catch(e){
+  Notiflix.Notify.failure(
+    'Sorry, there are no images matching your search query. Please try again.',
+    {
+      timeout: 6000,
+      width: '500px',
+    },
+  );
+}
   
 };
 
 function onLoad(entries, observer){
   entries.forEach(entry => {
     if(entry.isIntersecting){
+      Notiflix.Loading.standard({
+        backgroundColor: 'rgba(0,0,0,0)',
+      })
       newsApi.axiosRequest()
       .then(hits => {
+        Notiflix.Loading.remove();
        appendMarkup(hits);
        if(newsApi.page === Math.ceil(newsApi.totalHits/newsApi.per_page)){
         Notiflix.Notify.failure(
